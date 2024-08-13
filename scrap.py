@@ -87,10 +87,10 @@ def download_mp3s(_url):
 
         global folder_name
         folder_name = title
-        
-        linksfile = open('./'+folder_name+'/'+'links.txt', 'a')
 
         os.mkdir('./'+folder_name)
+        
+        linksfile = open('./'+folder_name+'/'+'links.txt', 'a')
 
         # Encontrar todos los enlaces en la página
         links = soup.find_all('a')
