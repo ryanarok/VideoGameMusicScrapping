@@ -1,3 +1,4 @@
+#!/bin/bash
 python3 -c "
 import requests
 from urllib import request
