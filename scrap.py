@@ -1,6 +1,7 @@
 import requests
 from urllib import request
 from bs4 import BeautifulSoup
+import os
 
 print('Introduzca el enlace de la pagina para descargar:')
 
@@ -28,6 +29,7 @@ ran = range(int(input()),int(input())+1)
 st = {"set"}
 to_download = []
 
+folder_name = 'VideoGameMusic'
 
 def download(_link, _name, _number):
     decision = True
@@ -38,7 +40,7 @@ def download(_link, _name, _number):
         
         if decision:
             print('Descargando: '+_name)
-            request.urlretrieve(_link, _name)
+            request.urlretrieve(_link, './'+folder_name+'/'+_name)
 
 def get_list_of_mp3s(_url, _number):
     response = requests.get(_url)
@@ -74,9 +76,21 @@ def download_mp3s(_url):
     if response.status_code == 200: 
 
         print('OK')
-        linksfile = open('links.txt', 'a')
+        
         # Parsear el contenido HTML de la página
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        title = soup.find_all('title')[0].get_text()
+        endtitle =  title.find('MP3')-1
+        
+        title = title[:endtitle]
+
+        global folder_name
+        folder_name = title
+        
+        linksfile = open('./'+folder_name+'/'+'links.txt', 'a')
+
+        os.mkdir('./'+folder_name)
 
         # Encontrar todos los enlaces en la página
         links = soup.find_all('a')
