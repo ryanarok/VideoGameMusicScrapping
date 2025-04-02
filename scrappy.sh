@@ -3,6 +3,7 @@ python3 -c "
 import requests
 from urllib import request
 from bs4 import BeautifulSoup
+from requests.auth import HTTPProxyAuth
 import os
 
 print('Introduzca el enlace de la pagina para descargar:')
@@ -28,7 +29,7 @@ ran = range(int(input()),int(input())+1)
 ##
 #
 
-st = {"set"}
+st = {'set'}
 to_download = []
 
 folder_name = 'VideoGameMusic'
@@ -44,8 +45,21 @@ def download(_link, _name, _number):
             print('Descargando: '+_name)
             request.urlretrieve(_link, './'+folder_name+'/'+_name)
 
+
+auth = HTTPProxyAuth('gmontes', '1A2b3c0@')
+
+http_proxy  = 'http://10.0.0.1:8080'
+https_proxy = 'http://10.0.0.1:8080'
+ftp_proxy   = 'http://10.0.0.1:8080'
+
+proxies = { 
+              'http'  : http_proxy, 
+              'https' : https_proxy, 
+              'ftp'   : ftp_proxy
+            }
+
 def get_list_of_mp3s(_url, _number):
-    response = requests.get(_url)
+    response = requests.get(_url, proxies=proxies, auth=auth)
     if response.status_code == 200: 
         # Parsear el contenido HTML de la página
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -74,7 +88,7 @@ def get_list_of_mp3s(_url, _number):
         print('Error al acceder al archivo:', response.status_code)
 
 def download_mp3s(_url):
-    response = requests.get(_url)
+    response = requests.get(_url, proxies=proxies, auth=auth)
     if response.status_code == 200: 
 
         print('OK')

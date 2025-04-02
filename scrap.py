@@ -3,6 +3,9 @@ from urllib import request
 from bs4 import BeautifulSoup
 import os
 
+with open('file', 'w') as e:
+    print(e.write("A"))
+
 print('Introduzca el enlace de la pagina para descargar:')
 
 url = input()#'https://downloads.khinsider.com/game-soundtracks/album/the-last-story'
@@ -42,8 +45,20 @@ def download(_link, _name, _number):
             print('Descargando: '+_name)
             request.urlretrieve(_link, './'+folder_name+'/'+_name)
 
+
+http_proxy  = "http://10.0.0.1:8080"
+https_proxy = "http://10.0.0.1:8080"
+ftp_proxy   = "http://10.0.0.1:8080"
+
+proxies = {
+              "http"  : http_proxy,
+              "https" : https_proxy,
+              "ftp"   : ftp_proxy
+            }
+
 def get_list_of_mp3s(_url, _number):
-    response = requests.get(_url)
+
+    response = requests.get(_url,proxies=proxies)
     if response.status_code == 200: 
         # Parsear el contenido HTML de la página
         soup = BeautifulSoup(response.text, 'html.parser')
