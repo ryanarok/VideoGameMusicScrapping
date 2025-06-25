@@ -21,8 +21,12 @@ print('Deseas decidir descargar solo determinados archivos? (y/n) (Default:no)')
 
 decide = (True if input().lower() == 'y' else False)
 
-print('Rango de archivos que quieres descargar:')
+print('Rango de archivos que quieres descargar: (en lineas separadas)')
 ran = range(int(input()),int(input())+1)
+
+print('Formato de archivos que quieres descargar: (m,mp3/f,flac) (Default:mp3)')
+inp = input()
+file_format = (".flac" if (inp.lower() == 'f' or inp.lower() == "flac") else ".mp3")
 
 #
 ##
@@ -48,7 +52,7 @@ def download(_link, _name, _number):
             print('Descargando: '+_name)
             request.urlretrieve(_link, './'+folder_name+'/'+_name)
 
-def get_list_of_mp3s(_url, _number):
+def get_list_of_files(_url, _number, format):
     response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
         # Parsear el contenido HTML de la página
@@ -62,7 +66,7 @@ def get_list_of_mp3s(_url, _number):
             sref = str(href)
             # Imprimir el atributo href de cada enlace
             if(str(type(href))=='<class \'str\'>'):
-                if(sref.find('.mp3')!=-1):
+                if(sref.find(format)!=-1):
                     if(not (sref in st)):
 
                         name = sref[sref.rfind('/')+1:len(sref)]
@@ -74,7 +78,7 @@ def get_list_of_mp3s(_url, _number):
     else:
         print('Error al acceder al archivo:', response.status_code)
 
-def download_mp3s(_url):
+def download_files(_url, format):
     response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
 
@@ -110,7 +114,7 @@ def download_mp3s(_url):
                 if(sref.find('.mp3')!=-1):
                     if(not (sref in st)):
                         linksfile.write(href+'\n')
-                        get_list_of_mp3s('https://downloads.khinsider.com'+sref, counter)
+                        get_list_of_files('https://downloads.khinsider.com'+sref, counter, format)
 
                         st.add(sref)
                         counter+=1
@@ -122,6 +126,6 @@ def download_mp3s(_url):
     else:
         print('Error al acceder a la página:', response.status_code)
 
-download_mp3s(url)
+download_files(url, file_format)
 
 print('Descarga finalizada')
