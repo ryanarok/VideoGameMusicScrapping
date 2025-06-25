@@ -3,20 +3,30 @@ from urllib import request
 from bs4 import BeautifulSoup
 import os
 
+headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Referer": "https://www.google.com/"
+    }
+
 print('Introduzca el enlace de la pagina para descargar:')
 
-url = input()#'https://downloads.khinsider.com/game-soundtracks/album/the-last-story'
+url = input()
 
-print('Deseas listar y luego descargar? (y/n)')
+print('Deseas listar y luego descargar? (y/n) (Default:no)')
 
 download_last = (True if input().lower() == 'y' else False)
 
-print('Deseas decidir descargar solo determinados archivos? (y/n)')
+print('Deseas decidir descargar solo determinados archivos? (y/n) (Default:no)')
 
 decide = (True if input().lower() == 'y' else False)
 
-print('Rango de archivos que quieres descargar:')
+print('Rango de archivos que quieres descargar: (en lineas separadas)')
 ran = range(int(input()),int(input())+1)
+
+print('Formato de archivos que quieres descargar: (m,mp3/f,flac) (Default:mp3)')
+inp = input()
+file_format = (".flac" if (inp.lower() == 'f' or inp.lower() == "flac") else ".mp3")
 
 #
 ##
@@ -42,8 +52,8 @@ def download(_link, _name, _number):
             print('Descargando: '+_name)
             request.urlretrieve(_link, './'+folder_name+'/'+_name)
 
-def get_list_of_mp3s(_url, _number):
-    response = requests.get(_url)
+def get_list_of_files(_url, _number, format):
+    response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
         # Parsear el contenido HTML de la página
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -56,7 +66,7 @@ def get_list_of_mp3s(_url, _number):
             sref = str(href)
             # Imprimir el atributo href de cada enlace
             if(str(type(href))=='<class \'str\'>'):
-                if(sref.find('.mp3')!=-1):
+                if(sref.find(format)!=-1):
                     if(not (sref in st)):
 
                         name = sref[sref.rfind('/')+1:len(sref)]
@@ -65,14 +75,11 @@ def get_list_of_mp3s(_url, _number):
                         to_download.append((sref, name, _number))
                         if not download_last:
                             download(sref,name,_number)
-                        
-        
-        
     else:
         print('Error al acceder al archivo:', response.status_code)
 
-def download_mp3s(_url):
-    response = requests.get(_url)
+def download_files(_url, format):
+    response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
 
         print('OK')
@@ -81,6 +88,7 @@ def download_mp3s(_url):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         title = soup.find_all('title')[0].get_text()
+
         endtitle =  title.find('MP3')-1
         
         title = title[:endtitle]
@@ -105,7 +113,7 @@ def download_mp3s(_url):
                 if(sref.find('.mp3')!=-1):
                     if(not (sref in st)):
                         linksfile.write(href+'\n')
-                        get_list_of_mp3s('https://downloads.khinsider.com'+sref, counter)
+                        get_list_of_files('https://downloads.khinsider.com'+sref, counter, format)
 
                         st.add(sref)
                         counter+=1
@@ -117,6 +125,6 @@ def download_mp3s(_url):
     else:
         print('Error al acceder a la página:', response.status_code)
 
-download_mp3s(url)
+download_files(url, file_format)
 
 print('Descarga finalizada')
