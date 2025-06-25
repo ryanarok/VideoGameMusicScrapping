@@ -4,11 +4,11 @@ This is a funcionality that will let you download an entire album from [Khinside
 
 ## Usage
 
-**Windows**
+**Windows:**
     Download `scrap.exe` in the releases and execute it
 
-**Linux**
+**Linux:**
     Download `scrap` in the releases and execute it
 
-**Python**
+**Python:**
     Download `scrap.py` and run `python3 ./scrap.py` in the folder
