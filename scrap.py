@@ -65,14 +65,12 @@ def get_list_of_mp3s(_url, _number):
                         to_download.append((sref, name, _number))
                         if not download_last:
                             download(sref,name,_number)
-                        
-        
-        
     else:
         print('Error al acceder al archivo:', response.status_code)
 
 def download_mp3s(_url):
     response = requests.get(_url)
+    print(_url)
     if response.status_code == 200: 
 
         print('OK')
@@ -81,7 +79,9 @@ def download_mp3s(_url):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         title = soup.find_all('title')[0].get_text()
+
         endtitle =  title.find('MP3')-1
+        print(title)
         
         title = title[:endtitle]
 
