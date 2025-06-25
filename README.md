@@ -1,5 +1,4 @@
 # Khinsider Album Downloader
-# Khinsider Album Downloader
 
 This is a funcionality that will let you download an entire album from [Khinsider](https://downloads.khinsider.com/) for free.
 
