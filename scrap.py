@@ -3,15 +3,21 @@ from urllib import request
 from bs4 import BeautifulSoup
 import os
 
+headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Referer": "https://www.google.com/"
+    }
+
 print('Introduzca el enlace de la pagina para descargar:')
 
-url = input()#'https://downloads.khinsider.com/game-soundtracks/album/the-last-story'
+url = input()
 
-print('Deseas listar y luego descargar? (y/n)')
+print('Deseas listar y luego descargar? (y/n) (Default:no)')
 
 download_last = (True if input().lower() == 'y' else False)
 
-print('Deseas decidir descargar solo determinados archivos? (y/n)')
+print('Deseas decidir descargar solo determinados archivos? (y/n) (Default:no)')
 
 decide = (True if input().lower() == 'y' else False)
 
@@ -43,7 +49,7 @@ def download(_link, _name, _number):
             request.urlretrieve(_link, './'+folder_name+'/'+_name)
 
 def get_list_of_mp3s(_url, _number):
-    response = requests.get(_url)
+    response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
         # Parsear el contenido HTML de la página
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -69,8 +75,7 @@ def get_list_of_mp3s(_url, _number):
         print('Error al acceder al archivo:', response.status_code)
 
 def download_mp3s(_url):
-    response = requests.get(_url)
-    print(_url)
+    response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
 
         print('OK')
