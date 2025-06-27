@@ -106,7 +106,7 @@ def download_files(_url, format):
     download_button.config(text="Descargando...")
     response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
-        print(response.content)
+
         print('OK')
         
         # Parsear el contenido HTML de la página
@@ -115,7 +115,6 @@ def download_files(_url, format):
         title = soup.find_all('title')[0].get_text()
 
         endtitle =  title.find('MP3')-1
-        print(title, "<<<<")
         
         title = title[:endtitle]
 
