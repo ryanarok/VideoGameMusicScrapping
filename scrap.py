@@ -45,9 +45,8 @@ ran_r.pack()
 format_label=tk.Label(ventana,text="Formato a descargar")
 format_label.pack()
 file_format = ".mp3"
-mp3_rb = tk.Radiobutton(ventana,text="mp3",value='.mp3',variable=file_format)
+mp3_rb = tk.Radiobutton(ventana,text="mp3",value='.mp3',variable=file_format,)
 mp3_rb.pack()
-print(mp3_rb)
 flac_rb = tk.Radiobutton(ventana,text="flac",value='.flac',variable=file_format)
 flac_rb.pack()
 
@@ -104,11 +103,12 @@ def get_list_of_files(_url, _number, format):
     else:
         print('Error al acceder al archivo:', response.status_code)
 def download_files(_url, format):
+    
     print(ran_l.get())
     download_button.config(text="Descargando...")
     response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
-
+        print(response.content)
         print('OK')
         
         # Parsear el contenido HTML de la página
