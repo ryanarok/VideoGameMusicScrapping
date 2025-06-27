@@ -2,6 +2,17 @@ import requests
 from urllib import request
 from bs4 import BeautifulSoup
 import os
+import tkinter as tk
+
+# Crear una ventana
+ventana = tk.Tk()
+ventana.title("Khinsider Downloader")
+
+text_label = tk.Label(ventana, text="Enlace del album a descargar:")
+text_label.pack()
+text = tk.Text(ventana, height=3)
+text.pack()
+
 
 headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
@@ -9,24 +20,39 @@ headers = {
         "Referer": "https://www.google.com/"
     }
 
-print('Introduzca el enlace de la pagina para descargar:')
+download_last = tk.BooleanVar()
+download_last_switch = tk.Checkbutton(ventana, variable=download_last, text="Listar primero")
+download_last_switch.pack()
 
-url = input()
+decide = tk.BooleanVar()
+decide_switch = tk.Checkbutton(ventana, variable=decide,text='Descargar determinados archivos')
+decide_switch.pack()
 
-print('Deseas listar y luego descargar? (y/n) (Default:no)')
+album_size = 20 ####GET
+ran = range(1,album_size+1)
+def update_ran():
+    ran = range(int(ran_l.get()),int(ran_r.get())+1)
+    ran_l.config(to=ran[-1])
+    ran_r.config(from_=ran[0])
 
-download_last = (True if input().lower() == 'y' else False)
+range_label=tk.Label(ventana,text="Rango de archivos a descargar")
+range_label.pack()
+ran_l = tk.Spinbox(ventana,from_=1,to=ran[-1],command=update_ran) #TO RAN_R
+ran_l.pack()
+ran_r = tk.Spinbox(ventana, from_=ran[0], to=album_size,command=update_ran) ##FIX
+ran_r.pack()
 
-print('Deseas decidir descargar solo determinados archivos? (y/n) (Default:no)')
+format_label=tk.Label(ventana,text="Formato a descargar")
+format_label.pack()
+file_format = ".mp3"
+mp3_rb = tk.Radiobutton(ventana,text="mp3",value='.mp3',variable=file_format)
+mp3_rb.pack()
+print(mp3_rb)
+flac_rb = tk.Radiobutton(ventana,text="flac",value='.flac',variable=file_format)
+flac_rb.pack()
 
-decide = (True if input().lower() == 'y' else False)
-
-print('Rango de archivos que quieres descargar: (en lineas separadas)')
-ran = range(int(input()),int(input())+1)
-
-print('Formato de archivos que quieres descargar: (m,mp3/f,flac) (Default:mp3)')
-inp = input()
-file_format = (".flac" if (inp.lower() == 'f' or inp.lower() == "flac") else ".mp3")
+download_button = tk.Button(ventana, text="Descargar", command=lambda: download_files(text.get("1.0",tk.END),file_format))
+download_button.pack()
 
 #
 ##
@@ -44,7 +70,7 @@ folder_name = 'VideoGameMusic'
 def download(_link, _name, _number):
     decision = True
     if _number in ran:
-        if decide:
+        if decide.get():
             print('Deseas descargar \''+_name+'\'? (y/n)')
             decision = (True if input().lower() == 'y' else False)
         
@@ -73,12 +99,13 @@ def get_list_of_files(_url, _number, format):
                         name = name.replace('%20', ' ')
 
                         to_download.append((sref, name, _number))
-                        if not download_last:
+                        if not download_last.get():
                             download(sref,name,_number)
     else:
         print('Error al acceder al archivo:', response.status_code)
-
 def download_files(_url, format):
+    print(ran_l.get())
+    download_button.config(text="Descargando...")
     response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
 
@@ -90,7 +117,7 @@ def download_files(_url, format):
         title = soup.find_all('title')[0].get_text()
 
         endtitle =  title.find('MP3')-1
-        print(title)
+        print(title, "<<<<")
         
         title = title[:endtitle]
 
@@ -102,7 +129,7 @@ def download_files(_url, format):
         linksfile = open('./'+folder_name+'/'+'links.txt', 'a')
 
         # Encontrar todos los enlaces en la página
-        links = soup.find_all('a')
+        links = soup.find_all('a')  
         counter = 1
         print('Archivos a descargar:')
         for link in links:
@@ -119,13 +146,18 @@ def download_files(_url, format):
                         st.add(sref)
                         counter+=1
 
-        if download_last:
+        if download_last.get():
             for file in to_download:
                 download(file[0], file[1])
         
     else:
         print('Error al acceder a la página:', response.status_code)
 
-download_files(url, file_format)
+
+
+
+print(ran_r.get())
+# Ejecutar el bucle principal
+ventana.mainloop()
 
 print('Descarga finalizada')
