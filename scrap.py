@@ -50,7 +50,7 @@ mp3_rb.pack()
 flac_rb = tk.Radiobutton(ventana,text="flac",value='.flac',variable=file_format)
 flac_rb.pack()
 
-download_button = tk.Button(ventana, text="Descargar", command=lambda: download_files(text.get("1.0",tk.END),file_format))
+download_button = tk.Button(ventana, text="Descargar", command=lambda: download_files(str(text.get("1.0",tk.END)).strip("\n"),file_format))
 download_button.pack()
 
 #
@@ -103,8 +103,6 @@ def get_list_of_files(_url, _number, format):
     else:
         print('Error al acceder al archivo:', response.status_code)
 def download_files(_url, format):
-    
-    print(ran_l.get())
     download_button.config(text="Descargando...")
     response = requests.get(_url, headers=headers)
     if response.status_code == 200: 
@@ -153,11 +151,6 @@ def download_files(_url, format):
     else:
         print('Error al acceder a la página:', response.status_code)
 
-
-
-
-print(ran_r.get())
-# Ejecutar el bucle principal
 ventana.mainloop()
 
 print('Descarga finalizada')
