@@ -4,6 +4,15 @@ from bs4 import BeautifulSoup
 import os
 import tkinter as tk
 
+
+
+headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Referer": "https://www.google.com/"
+    }
+
+### TKinter Interface
 # Crear una ventana
 ventana = tk.Tk()
 ventana.title("Khinsider Downloader")
@@ -12,13 +21,6 @@ text_label = tk.Label(ventana, text="Enlace del album a descargar:")
 text_label.pack()
 text = tk.Text(ventana, height=3)
 text.pack()
-
-
-headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "Referer": "https://www.google.com/"
-    }
 
 download_last = tk.BooleanVar()
 download_last_switch = tk.Checkbutton(ventana, variable=download_last, text="Listar primero")
@@ -52,14 +54,6 @@ flac_rb.pack()
 
 download_button = tk.Button(ventana, text="Descargar", command=lambda: download_files(str(text.get("1.0",tk.END)).strip("\n"),file_format))
 download_button.pack()
-
-#
-##
-###
-#ARREGLAR %%%%%%%%%%%%%%%%%%
-###
-##
-#
 
 st = {"set"}
 to_download = []
@@ -113,6 +107,7 @@ def download_files(_url, format):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         title = soup.find_all('title')[0].get_text()
+        print(soup.find_all('p'))
 
         endtitle =  title.find('MP3')-1
         
